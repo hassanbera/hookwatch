@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum DeliveryStatus {
+  QUEUED
+  PROCESSING
+  DELIVERED
+  FAILED
+}
+
+model Endpoint {
+  id         String     @id @default(uuid()) @db.Uuid
+  name       String     @db.VarChar(100)
+  url        String     @db.VarChar(500)
+  createdAt  DateTime   @default(now())
+  deliveries Delivery[]
+}
+
+model Delivery {
+  id            String         @id @default(uuid()) @db.Uuid
+  endpointId    String         @db.Uuid
+  endpoint      Endpoint       @relation(fields: [endpointId], references: [id], onDelete: Cascade)
+  eventType     String         @db.VarChar(80)
+  payload       Json
+  status        DeliveryStatus @default(QUEUED)
+  attemptCount  Int            @default(0)
+  cycleAttempts Int            @default(0)
+  nextAttemptAt DateTime       @default(now())
+  lockedAt      DateTime?
+  lockToken     String?        @db.Uuid
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  attempts      Attempt[]
+
+  @@index([status, nextAttemptAt])
+  @@index([endpointId, createdAt])
+}
+
+model Attempt {
+  id         String   @id @default(uuid()) @db.Uuid
+  deliveryId String   @db.Uuid
+  delivery   Delivery @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+  number     Int
+  statusCode Int?
+  durationMs Int
+  error      String?  @db.VarChar(500)
+  createdAt  DateTime @default(now())
+
+  @@unique([deliveryId, number])
+}

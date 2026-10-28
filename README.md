@@ -85,7 +85,20 @@ npm test
 npm run build
 ```
 
-Testler gerçek PostgreSQL üzerinde HTTP API ve kritik iş kurallarını doğrular. Test komutu kendine ait rastgele isimli bir veritabanı oluşturur, migration uygular ve test sonunda yalnızca bu veritabanını siler. Geliştirme worker’ı ve demo verileri testlere karışmaz. Yerel veritabanı kullanıcısında CREATEDB yetkisi gerekir; Compose ve CI kullanıcısında bu yetki vardır. CI migration, tip kontrolü, test ve build adımlarını çalıştırır. Yerelde test öncesi `npm run setup` çalışmış olmalıdır.
+Testler gerçek PostgreSQL üzerinde HTTP API ve kritik iş kurallarını doğrular. Test komutu kendine ait rastgele isimli bir veritabanı oluşturur, migration uygular ve test sonunda yalnızca bu veritabanını siler. Geliştirme worker’ı ve demo verileri testlere karışmaz. Yerel veritabanı kullanıcısında CREATEDB yetkisi gerekir; Compose ve CI kullanıcısında bu yetki vardır. CI şablonu migration, tip kontrolü, test ve build adımlarını içerir. Yerelde test öncesi `npm run setup` çalışmış olmalıdır.
+
+## GitHub Actions
+
+CI tanımı [docs/github-actions-ci.yml](docs/github-actions-ci.yml) içinde hazırdır. İlk gönderimde kullanılan GitHub bağlantısında workflow yazma yetkisi bulunmadığı için otomatik CI henüz etkin değildir. Yerel test ve build komutları çalışır.
+
+Workflow yazma yetkili bir GitHub oturumunda:
+
+```sh
+npm run ci:enable
+git add .github/workflows/ci.yml
+git commit -m "Enable CI"
+git push
+```
 
 ## Yapılandırma ve sınırlar
 

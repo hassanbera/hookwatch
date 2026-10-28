@@ -19,7 +19,8 @@
     "db:down": "docker compose down",
     "db:generate": "npm run db:generate -w backend",
     "db:migrate": "npm run db:migrate -w backend",
-    "db:seed": "npm run db:seed -w backend"
+    "db:seed": "npm run db:seed -w backend",
+    "ci:enable": "node scripts/enable-ci.mjs"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"

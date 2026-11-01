@@ -8,6 +8,10 @@ React + TypeScript · Express + TypeScript · PostgreSQL + Prisma. Next.js içer
 
 [Telefon görünümü](docs/mobile.png)
 
+## Arayüz
+
+**Mantine** · Koyu operasyon ekranı, camgöbeği vurgu ve teslimat/deneme kayıtları. Tema sınırları ve doğrulama notları: [Arayüz sistemi](docs/ui.md).
+
 ## Özellikler
 
 - İzin verilen origin listesiyle webhook hedefleri

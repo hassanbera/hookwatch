@@ -1,3 +1,4 @@
+import { Table } from '@mantine/core';
 import { useEffect, useState, type FormEvent } from 'react';
 import {
   Plus,
@@ -15,7 +16,18 @@ import {
   Copy,
 } from 'lucide-react';
 import { api, message } from './lib/api';
-import { Shell, Modal, Notice, Stat, Loading, Empty } from './components/ui';
+import {
+  Shell,
+  Modal,
+  Notice,
+  Stat,
+  Loading,
+  Empty,
+  UiButton,
+  UiInput,
+  UiTextarea,
+  UiSelect,
+} from './components/ui';
 import { type Endpoint, type Delivery, labels } from './types';
 const time = (s: string) =>
   new Intl.DateTimeFormat('tr-TR', { dateStyle: 'short', timeStyle: 'medium' }).format(new Date(s));
@@ -129,18 +141,18 @@ export default function App() {
       subtitle="Olayı gönder. Sonucu gör. Gerektiğinde yeniden dene."
       actions={
         <>
-          <button className="secondary" onClick={() => setModal('endpoint')}>
+          <UiButton className="secondary" onClick={() => setModal('endpoint')}>
             <Plus size={17} />
             Hedef ekle
-          </button>
-          <button
+          </UiButton>
+          <UiButton
             className="primary"
             disabled={!endpoints.length}
             onClick={() => setModal('event')}
           >
             <Send size={17} />
             Olay gönder
-          </button>
+          </UiButton>
         </>
       }
     >
@@ -199,7 +211,7 @@ export default function App() {
         </section>
         <div className="queue-note">
           <Activity size={25} />
-          <span className="eyebrow">GÖRÜNÜR VE DAYANIKLI</span>
+          <span className="context-label">GÖRÜNÜR VE DAYANIKLI</span>
           <h2>Bir denemeden fazlası.</h2>
           <p>Geçici hatalarda otomatik tekrar. Her denemede süre, HTTP kodu ve sonuç.</p>
           <span className="live-indicator">
@@ -214,7 +226,7 @@ export default function App() {
           </h2>
           <label className="search">
             <Search size={16} />
-            <input
+            <UiInput
               aria-label="Teslimatlarda ara"
               placeholder="Olay, hedef veya ID ara…"
               value={search}
@@ -230,13 +242,13 @@ export default function App() {
             ['PROCESSING', 'Gönderiliyor'],
             ['FAILED', 'Başarısız'],
           ].map(([key, label]) => (
-            <button
+            <UiButton
               key={key}
               className={filter === key ? 'selected' : ''}
               onClick={() => setFilter(key)}
             >
               {label}
-            </button>
+            </UiButton>
           ))}
         </div>
         {loading ? (
@@ -245,26 +257,26 @@ export default function App() {
           <Empty>Bu görünümde teslimat yok. Yeni bir olay göndererek başla.</Empty>
         ) : (
           <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>OLAY</th>
-                  <th>HEDEF</th>
-                  <th>DURUM</th>
-                  <th>DENEME</th>
-                  <th>OLUŞTURULDU</th>
-                  <th aria-label="Ayrıntı" />
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>OLAY</Table.Th>
+                  <Table.Th>HEDEF</Table.Th>
+                  <Table.Th>DURUM</Table.Th>
+                  <Table.Th>DENEME</Table.Th>
+                  <Table.Th>OLUŞTURULDU</Table.Th>
+                  <Table.Th aria-label="Ayrıntı" />
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
                 {filtered.map((d) => (
-                  <tr key={d.id}>
-                    <td>
+                  <Table.Tr key={d.id}>
+                    <Table.Td>
                       <strong className="mono">{d.eventType}</strong>
                       <small className="mono">{d.id.slice(0, 8)}</small>
-                    </td>
-                    <td>{d.endpoint.name}</td>
-                    <td>
+                    </Table.Td>
+                    <Table.Td>{d.endpoint.name}</Table.Td>
+                    <Table.Td>
                       <span
                         className={
                           'status-badge ' +
@@ -277,24 +289,24 @@ export default function App() {
                       >
                         {labels[d.status]}
                       </span>
-                    </td>
-                    <td>
+                    </Table.Td>
+                    <Table.Td>
                       <span className="attempt-number">{d.attemptCount}</span>
-                    </td>
-                    <td className="muted">{time(d.createdAt)}</td>
-                    <td>
-                      <button
+                    </Table.Td>
+                    <Table.Td className="muted">{time(d.createdAt)}</Table.Td>
+                    <Table.Td>
+                      <UiButton
                         className="icon-button"
                         aria-label={d.eventType + ' ayrıntıları'}
                         onClick={() => setSelected(d.id)}
                       >
                         <ChevronRight size={19} />
-                      </button>
-                    </td>
-                  </tr>
+                      </UiButton>
+                    </Table.Td>
+                  </Table.Tr>
                 ))}
-              </tbody>
-            </table>
+              </Table.Tbody>
+            </Table>
           </div>
         )}
       </section>
@@ -313,7 +325,7 @@ export default function App() {
               <>
                 <label>
                   Hedef adı
-                  <input
+                  <UiInput
                     name="name"
                     maxLength={100}
                     required
@@ -323,7 +335,7 @@ export default function App() {
                 </label>
                 <label>
                   Webhook URL
-                  <input
+                  <UiInput
                     name="url"
                     type="url"
                     maxLength={500}
@@ -340,17 +352,17 @@ export default function App() {
               <>
                 <label>
                   Hedef
-                  <select name="endpoint">
+                  <UiSelect name="endpoint">
                     {endpoints.map((e) => (
                       <option key={e.id} value={e.id}>
                         {e.name}
                       </option>
                     ))}
-                  </select>
+                  </UiSelect>
                 </label>
                 <label>
                   Olay türü
-                  <input
+                  <UiInput
                     name="eventType"
                     required
                     maxLength={80}
@@ -360,7 +372,7 @@ export default function App() {
                 </label>
                 <label>
                   Payload (JSON)
-                  <textarea
+                  <UiTextarea
                     name="payload"
                     className="code-input"
                     rows={7}
@@ -375,12 +387,12 @@ export default function App() {
               </>
             )}
             <div className="form-actions">
-              <button type="button" className="secondary" onClick={() => setModal(null)}>
+              <UiButton type="button" className="secondary" onClick={() => setModal(null)}>
                 Vazgeç
-              </button>
-              <button className="primary" disabled={busy}>
+              </UiButton>
+              <UiButton className="primary" disabled={busy}>
                 {busy ? 'Kaydediliyor…' : modal === 'endpoint' ? 'Hedefi ekle' : 'Kuyruğa ekle'}
-              </button>
+              </UiButton>
             </div>
           </form>
         </Modal>
@@ -389,22 +401,22 @@ export default function App() {
         <Modal title="Teslimat ayrıntıları" close={() => setSelected(null)}>
           <div className="detail-intro">
             <div>
-              <span className="eyebrow">{detail.endpoint.name}</span>
+              <span className="context-label">{detail.endpoint.name}</span>
               <h3 className="mono">{detail.eventType}</h3>
               <p>
                 {labels[detail.status]} · {detail.attemptCount} deneme
               </p>
             </div>
             {detail.status === 'FAILED' && (
-              <button className="secondary" disabled={busy} onClick={() => retry(detail.id)}>
+              <UiButton className="secondary" disabled={busy} onClick={() => retry(detail.id)}>
                 <RotateCw size={15} />
                 Yeniden dene
-              </button>
+              </UiButton>
             )}
           </div>
           <div className="id-line">
             <code>{detail.id}</code>
-            <button
+            <UiButton
               className="icon-button"
               aria-label="Teslimat ID kopyala"
               onClick={() =>
@@ -412,7 +424,7 @@ export default function App() {
               }
             >
               <Copy size={15} />
-            </button>
+            </UiButton>
           </div>
           <h4>Olay verisi</h4>
           <pre>{JSON.stringify(detail.payload, null, 2)}</pre>
